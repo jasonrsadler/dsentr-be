@@ -1,7 +1,8 @@
 use diesel::{Queryable, Insertable};
-use super::super::schema::*;
 use serde_derive::*;
 use rocket::*;
+
+use crate::schema::*;
 
 #[derive(Queryable, Serialize)]
 pub struct UserEntity {
@@ -12,7 +13,6 @@ pub struct UserEntity {
 }
 
 #[derive(Insertable, Deserialize, Serialize, FromForm)]
-#[table_name="users"]
 pub struct User {
   pub name: String,
   pub email: String,

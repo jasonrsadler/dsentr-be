@@ -1,10 +1,13 @@
-use diesel::prelude::*;
-use rocket_contrib::json::Json;
-use rocket::State;
+extern crate diesel;
 
-use super::super::db::models::*;
-use super::schema::*;
-use super::crypto_auth;
+use diesel::prelude::*;
+use rocket::State;
+use rocket_contrib::json::Json;
+
+use crate::auth::crypto_auth;
+use crate::db::models::*;
+use crate::schema::*;
+
 
 pub fn create_signup(database_url: State<String>, create_info: Json<CreateInfo>) -> i32 {
   let user: User = User {

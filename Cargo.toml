@@ -6,6 +6,15 @@ edition = "2018"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[lib]
+name="dsentr_be_lib"
+path="src/lib.rs"
+
+[[bin]]
+name="dsentr_be"
+path="src/main.rs"
+
+
 [dependencies]
 rocket="0.4.7"
 chrono="0.4.19"

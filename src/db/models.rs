@@ -10,13 +10,14 @@ pub struct UserEntity {
   pub name: String,
   pub email: String,
   pub dob: String,
+  pub kyc_level: i32
 }
 
 #[derive(Insertable, Deserialize, Serialize, FromForm)]
 pub struct User {
-  pub name: String,
   pub email: String,
   pub dob: String,
+  pub kyc_level: i32
 }
 
 #[derive(Insertable)]
@@ -36,7 +37,6 @@ pub struct AuthInfoEntity {
 
 #[derive(FromForm, Deserialize)]
 pub struct CreateInfo {
-  pub name: String,
   pub email: String,
   pub dob: String,
   pub password: String
@@ -46,6 +46,12 @@ pub struct CreateInfo {
 pub struct LoginInfo {
   pub username: String,
   pub password: String
+}
+
+#[derive(Serialize)]
+pub struct CreateResult {
+  pub uid: i32,
+  pub auth_id: i32
 }
 
 #[derive(Serialize)]

@@ -13,6 +13,7 @@ table! {
         name -> Text,
         email -> Text,
         dob -> Text,
+        kyc_level -> Int4,
     }
 }
 

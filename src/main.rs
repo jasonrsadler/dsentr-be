@@ -38,6 +38,7 @@ struct AuthenticatedUser {
 impl<'a, 'r> FromRequest<'a, 'r> for AuthenticatedUser {
   type Error = LoginError;
   fn from_request(request: &'a Request<'r>) -> Outcome<AuthenticatedUser, LoginError> {
+    println!("gater");
     let username = request.headers().get_one("username");
     let password = request.headers().get_one("password");
     match (username, password) {
@@ -75,9 +76,8 @@ fn main() {
 }
 
 #[post("/api/users/create", format = "json", data = "<create_info>")]
-fn create(database_url: State<String>, create_info: Json<CreateInfo>) -> Json<i32> {
-  let user_id: i32 = auth::signup::create_signup(database_url, create_info);
-  Json(user_id)
+fn create(database_url: State<String>, create_info: Json<CreateInfo>) -> Json<Result<CreateResult, &str>> {
+  Json(auth::signup::create_signup(database_url, create_info))
 }
 
 #[post("/api/users/login", format = "json", data = "<login_info>")]
@@ -86,14 +86,19 @@ fn login_post(
   login_info: Json<LoginInfo>,
   mut cookies: Cookies,
 ) -> Json<Option<LoginResult>> {
+  println!("running request");
   let maybe_user = user::fetch_user_by_email(&db, &login_info.username);
   match maybe_user {
     Some(user) => {
+
+    println!("checking user");
       let maybe_auth = auth_info::fetch_auth_info_by_user_id(&db, user.id);
       match maybe_auth {
         Some(auth_info) => {
+          println!("checking auth info");
           let hash = auth::crypto_auth::hash_password(&login_info.password);
           if hash == auth_info.password_hash {
+            println!("setting cookie");
             cookies.add_private(Cookie::new("user_id", user.id.to_string()));
             let login_result: LoginResult = LoginResult {
               uid: user.id,
@@ -101,13 +106,20 @@ fn login_post(
             };
             Json(Some(login_result))
           } else {
+            println!("No cookie set");
             Json(None)
           }
         }
-        None => Json(None),
+        None => {
+          println!("no auth info");
+          Json(None)
+        }
       }
     }
-    None => Json(None),
+    None => {
+      println!("No User");
+      Json(None)
+    }
   }
 }
 
